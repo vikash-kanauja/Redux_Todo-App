@@ -10,7 +10,6 @@ const todoSlice = createSlice({
       state.todoList.unshift(action.payload);
     },
     deleteTodo: (state, action) => {
-      console.log(action.payload);
       state.todoList = state.todoList.filter(todo => todo.id !== action.payload.id);
     },
     taskComplete: (state, action) => {

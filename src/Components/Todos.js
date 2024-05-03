@@ -30,6 +30,10 @@ const Todos = () => {
         setShowOrHideTodoModal((prevState) => !prevState);
         setTime(moment().format("YYYY-MM-DDTHH:mm"));
         setTodoInputText("");
+        setError({
+            inputError: false,
+            dateError: false,
+        });
     };
     const openOrCloseDeletePopupModal = (todo) => {
         setDeleteTodoData(todo);
@@ -55,25 +59,25 @@ const Todos = () => {
         setEditTodoData(todo);
         setTodoInputText(todo.task);
         setTime(todo.time);
-
     };
 
     const addOrUpdateTodo = () => {
         const currentTime = moment();
         const selectedTime = moment(time);
-        if (selectedTime.isBefore(currentTime)) {
+
+        if (selectedTime.isBefore(currentTime) && todoInputText.trim() === "") {
+            setError({
+                inputError: true,
+                dateError: true,
+            });
+            return;
+        } else if (selectedTime.isBefore(currentTime)) {
             setError({
                 inputError: false,
                 dateError: true,
             });
             return;
-        } else {
-            setError({
-                inputError: false,
-                dateError: true,
-            });
-        }
-        if (todoInputText.trim() === "") {
+        } else if (todoInputText.trim() === "") {
             setError({
                 inputError: true,
                 dateError: false,
@@ -85,6 +89,7 @@ const Todos = () => {
                 dateError: false,
             });
         }
+
         if (editTodoData) {
             setTime(moment().format("YYYY-MM-DDTHH:mm"));
             dispatch(editTodo({
