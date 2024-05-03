@@ -1,21 +1,18 @@
 import React from 'react';
 import { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { addTodo, editTodo } from '../redux/TodoSlice';
+import { FiPlusCircle } from "react-icons/fi";
 import moment from 'moment';
 import Navbar from './Navbar';
 import TodoItem from './TodoItem';
 import AddTodoModal from './AddTodoModal';
 import DeleteTodoModal from './DeleteTodoModal';
-import { FiPlusCircle } from "react-icons/fi";
+import { useSelector, useDispatch } from 'react-redux';
+import { addTodo, editTodo } from '../redux/TodoSlice';
+
 const Todos = () => {
     const [showOrHideTodoModal, setShowOrHideTodoModal] = useState(false);
     const [showOrHideDeleteModal, setShowOrHideDeleteModal] = useState(false);
     const [todoInputText, setTodoInputText] = useState("");
-    const [error, setError] = useState({
-        inputError: false,
-        dateError: false,
-    });
     const [editTodoData, setEditTodoData] = useState(null);
     const [deleteTodoData, setDeleteTodoData] = useState(null);
 
@@ -30,67 +27,20 @@ const Todos = () => {
         setShowOrHideTodoModal((prevState) => !prevState);
         setTime(moment().format("YYYY-MM-DDTHH:mm"));
         setTodoInputText("");
-        setError({
-            inputError: false,
-            dateError: false,
-        });
         setEditTodoData(null)
     };
     const openOrCloseDeletePopupModal = (todo) => {
         setDeleteTodoData(todo);
         setShowOrHideDeleteModal((prevState) => !prevState);
     };
-    const handleInput = (e) => {
-        const { name, value } = e.target;
-        let newError = { ...error };
-        if (name === "todoTitle") {
-            setTodoInputText(value);
-            newError.inputError = (value.trim() === "");
-            setError(newError);
-        } else if (name === "time") {
-            setTime(value);
-            const currentTime = moment();
-            const selectedTime = moment(value);
-            newError.dateError = selectedTime.isBefore(currentTime);
-            setError(newError);
-        }
-    };
+
     const editTodoClick = (todo) => {
         openOrCloseAddPopupModal();
         setEditTodoData(todo);
         setTodoInputText(todo.task);
         setTime(todo.time);
     };
-
     const addOrUpdateTodo = () => {
-        const currentTime = moment();
-        const selectedTime = moment(time);
-
-        if (selectedTime.isBefore(currentTime) && todoInputText.trim() === "") {
-            setError({
-                inputError: true,
-                dateError: true,
-            });
-            return;
-        } else if (selectedTime.isBefore(currentTime)) {
-            setError({
-                inputError: false,
-                dateError: true,
-            });
-            return;
-        } else if (todoInputText.trim() === "") {
-            setError({
-                inputError: true,
-                dateError: false,
-            });
-            return;
-        } else {
-            setError({
-                inputError: false,
-                dateError: false,
-            });
-        }
-
         if (editTodoData) {
             setTime(moment().format("YYYY-MM-DDTHH:mm"));
             dispatch(editTodo({
@@ -140,20 +90,19 @@ const Todos = () => {
                     editTodoClick={editTodoClick}
                     openOrCloseDeletePopupModal={openOrCloseDeletePopupModal} />
             ))}
-            <AddTodoModal showOrHideTodoModal={showOrHideTodoModal}
+            {showOrHideTodoModal && (<AddTodoModal 
                 openOrCloseAddPopupModal={openOrCloseAddPopupModal}
                 time={time}
-                error={error}
                 todoInputText={todoInputText}
+                setTime={setTime}
                 editTodoData={editTodoData}
-                handleInput={handleInput}
-                addOrUpdateTodo={addOrUpdateTodo} />
-            <DeleteTodoModal
-                showOrHideDeleteModal={showOrHideDeleteModal}
+                setTodoInputText={setTodoInputText}
+                addOrUpdateTodo={addOrUpdateTodo} />)}
+           {showOrHideDeleteModal && (<DeleteTodoModal
                 openOrCloseDeletePopupModal={openOrCloseDeletePopupModal}
                 deleteTodoData={deleteTodoData}
                 
-            />
+            />)}
         </div>
     );
 };

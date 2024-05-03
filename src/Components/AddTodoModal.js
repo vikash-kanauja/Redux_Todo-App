@@ -1,10 +1,57 @@
 import React from 'react';
+import { useState } from 'react';
 import moment from 'moment';
-const AddTodoModal = ({ showOrHideTodoModal, editTodoData,todoInputText, handleInput, openOrCloseAddPopupModal, addOrUpdateTodo, time, error }) => {
+const AddTodoModal = ({ editTodoData,todoInputText,setTodoInputText,setTime, openOrCloseAddPopupModal, addOrUpdateTodo, time }) => {
+
+  const [error, setError] = useState({ inputError: false, dateError: false });
   const dateTimePickerMinValue = moment().format("YYYY-MM-DDTHH:mm");
+
+  const handleInput = (e) => {
+    const { name, value } = e.target;
+    let newError = { ...error };
+    if (name === "todoTitle") {
+        setTodoInputText(value);
+        newError.inputError = (value.trim() === "");
+        setError(newError);
+    } else if (name === "time") {
+        setTime(value);
+        const selectedTime = moment(value);
+        newError.dateError = selectedTime.isBefore(dateTimePickerMinValue);
+        setError(newError);
+    }
+};
+
+  const handleAddOrUpdateTodo = () => {
+    if (moment(time).isSameOrBefore(dateTimePickerMinValue,"minute") && todoInputText.trim() === "") {
+      setError({
+          inputError: true,
+          dateError: true,
+      });
+      return;
+  } 
+   if (moment(time).isSameOrBefore(dateTimePickerMinValue)) {
+      setError({
+          inputError: false,
+          dateError: true,
+      });
+      return;
+  } else if (todoInputText.trim() === "") {
+      setError({
+          inputError: true,
+          dateError: false,
+      });
+      return;
+  } else {
+      setError({
+          inputError: false,
+          dateError: false,
+      });
+  }
+    addOrUpdateTodo();
+  };
+
   return (
     <div>
-      {showOrHideTodoModal && (
         <div className="absolute mx-auto w-11/12 top-[15%] left-[4%] bg-white border-2 p-2 rounded ">
           <textarea
             name="todoTitle"
@@ -24,12 +71,13 @@ const AddTodoModal = ({ showOrHideTodoModal, editTodoData,todoInputText, handleI
                2xl:mt-2 focus:outline-none`} />
           <div className="w-full flex justify-between text-lg font-semibold text-blue-500 mt-3 px-4">
             <button onClick={openOrCloseAddPopupModal}>Cancel</button>
-            <button onClick={addOrUpdateTodo}>{editTodoData ? "Update" : "ADD " }</button>
+            <button onClick={handleAddOrUpdateTodo}>{editTodoData ? "Update" : "Add " }</button>
           </div>
         </div>
-      )}
     </div>
   );
 };
 
 export default AddTodoModal;
+
+

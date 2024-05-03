@@ -1,10 +1,10 @@
 import React from 'react';
-import { useDispatch } from 'react-redux';
-import { taskComplete } from '../redux/TodoSlice';
 import moment from 'moment';
 import { MdDelete } from "react-icons/md";
 import { MdModeEditOutline } from "react-icons/md";
 import { BiAlarm } from "react-icons/bi";
+import { useDispatch } from 'react-redux';
+import { taskComplete } from '../redux/TodoSlice';
 
 const TodoItem = ({ todo, editTodoClick, openOrCloseDeletePopupModal }) => {
   const dispatch = useDispatch();
