@@ -34,6 +34,7 @@ const Todos = () => {
             inputError: false,
             dateError: false,
         });
+        setEditTodoData(null)
     };
     const openOrCloseDeletePopupModal = (todo) => {
         setDeleteTodoData(todo);
@@ -144,12 +145,14 @@ const Todos = () => {
                 time={time}
                 error={error}
                 todoInputText={todoInputText}
+                editTodoData={editTodoData}
                 handleInput={handleInput}
                 addOrUpdateTodo={addOrUpdateTodo} />
             <DeleteTodoModal
                 showOrHideDeleteModal={showOrHideDeleteModal}
                 openOrCloseDeletePopupModal={openOrCloseDeletePopupModal}
                 deleteTodoData={deleteTodoData}
+                
             />
         </div>
     );

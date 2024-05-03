@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-const AddTodoModal = ({ showOrHideTodoModal, todoInputText, handleInput, openOrCloseAddPopupModal, addOrUpdateTodo, time, error }) => {
+const AddTodoModal = ({ showOrHideTodoModal, editTodoData,todoInputText, handleInput, openOrCloseAddPopupModal, addOrUpdateTodo, time, error }) => {
   const dateTimePickerMinValue = moment().format("YYYY-MM-DDTHH:mm");
   return (
     <div>
@@ -24,7 +24,7 @@ const AddTodoModal = ({ showOrHideTodoModal, todoInputText, handleInput, openOrC
                2xl:mt-2 focus:outline-none`} />
           <div className="w-full flex justify-between text-lg font-semibold text-blue-500 mt-3 px-4">
             <button onClick={openOrCloseAddPopupModal}>Cancel</button>
-            <button onClick={addOrUpdateTodo}>Add</button>
+            <button onClick={addOrUpdateTodo}>{editTodoData ? "Update" : "ADD " }</button>
           </div>
         </div>
       )}
