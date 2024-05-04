@@ -9,9 +9,20 @@ import { useSelector } from "react-redux";
 const Todos = () => {
     const todoList = useSelector((state) => state.todos.todoList);
     const [showOrHideTodoModal, setShowOrHideTodoModal] = useState(false);
+    const [editTodoData, setEditTodoData] = useState(null);
     const [currentDateAndTime, setCurrentDateAndTime] = useState(
         moment().format("YYYY-MM-DDTHH:mm")
     );
+
+    const updateTodoData=(todo)=>{
+        setEditTodoData(todo)
+        setShowOrHideTodoModal(true)
+    }
+
+    const openOrCloseTodoModal = () => {
+        setEditTodoData(null)
+        setShowOrHideTodoModal(!showOrHideTodoModal);
+    };
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -19,11 +30,6 @@ const Todos = () => {
         }, 1000);
         return () => clearInterval(interval); 
     }, []);
-
-    const openOrCloseTodoModal = () => {
-        setShowOrHideTodoModal((prev) => !prev);
-    };
-
     return (
         <div className="w-full mx-auto relative pb-10 px-3 border-2 shadow-md sm:w-3/5 md:w-2/4 lg:w-2/5 2xl:w-2/6 mt-12 2xl:mt-15">
             <Navbar currentDateAndTime={currentDateAndTime} />
@@ -37,10 +43,13 @@ const Todos = () => {
             </div>
             {todoList.length === 0 && <h1>Add Todo</h1>}
             {todoList.map((todo) => (
-                <TodoItem key={todo.id} todo={todo} />
+                <TodoItem key={todo.id} todo={todo} openOrCloseTodoModal={openOrCloseTodoModal} updateTodoData={updateTodoData}/>
             ))}
             {showOrHideTodoModal && (
-                <AddTodoModal todo={null} openOrCloseAddPopupModal={openOrCloseTodoModal} />
+                <AddTodoModal
+                todo={editTodoData}
+                setEditTodoData={setEditTodoData}
+                 openOrCloseTodoModal={openOrCloseTodoModal} />
             )}
         </div>
     );

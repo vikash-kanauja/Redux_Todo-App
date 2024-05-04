@@ -6,12 +6,10 @@ import { MdModeEditOutline } from "react-icons/md";
 import { BiAlarm } from "react-icons/bi";
 import { useDispatch } from "react-redux";
 import { taskComplete } from "../redux/TodoSlice";
-import AddTodoModal from "./AddTodoModal";
 import DeleteTodoModal from "./DeleteTodoModal";
 
-const TodoItem = ({ todo }) => {
+const TodoItem = ({ todo ,updateTodoData}) => {
   const dispatch = useDispatch();
-  const [showOrHideUpdateModal, setShowOrHideUpdateModal] = useState(false);
   const [showOrHidedeleteModal, setShowOrHidedeleteModal] = useState(false);
 
   const todoCompleteTask = () => {
@@ -51,13 +49,13 @@ const TodoItem = ({ todo }) => {
             <MdDelete className="text-red-500" />
           </div>
           <div
-            className="cursor-pointer"
-            onClick={() => setShowOrHideUpdateModal((prev) => !prev)}>
+            className="cursor-pointer" 
+            onClick={()=>updateTodoData(todo)}
+            >
             <MdModeEditOutline />
           </div>
         </div>
       </div>
-      {showOrHideUpdateModal && <AddTodoModal todo={todo} setShowOrHideUpdateModal={setShowOrHideUpdateModal} />}
       {showOrHidedeleteModal && <DeleteTodoModal todo={todo} setShowOrHidedeleteModal={setShowOrHidedeleteModal} />}
     </div>
   );

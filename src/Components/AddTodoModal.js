@@ -3,7 +3,7 @@ import moment from "moment";
 import { addTodo, editTodo } from "../redux/TodoSlice";
 import { useDispatch } from "react-redux";
 
-const AddTodoModal = ({ openOrCloseAddPopupModal, todo, setShowOrHideUpdateModal }) => {
+const AddTodoModal = ({ openOrCloseTodoModal , todo,setEditTodoData }) => {
 
   const [todoInputData, setTodoInputData] = useState({
     todoInputText: "",
@@ -13,36 +13,6 @@ const AddTodoModal = ({ openOrCloseAddPopupModal, todo, setShowOrHideUpdateModal
   const [error, setError] = useState({ inputError: false, dateError: false });
   const dateTimePickerMinValue = moment().format("YYYY-MM-DDTHH:mm");
   const dispatch = useDispatch();
-
-  const addOrUpdateTodo = () => {
-    if (todo) {
-      dispatch(
-        editTodo({
-          id: todo.id,
-          task: todoInputData.todoInputText,
-          color: todo.color,
-          completed: todo.completed,
-          time: todoInputData.time,
-        })
-      );
-      setShowOrHideUpdateModal(false);
-    } else {
-      dispatch(
-        addTodo({
-          id: Date.now(),
-          task: todoInputData.todoInputText.trim(),
-          color: "green",
-          completed: false,
-          time: todoInputData.time,
-        })
-      );
-      openOrCloseAddPopupModal(false);
-    }
-    setTodoInputData({
-      todoInputText: "",
-      time: moment().format("YYYY-MM-DDTHH:mm")
-    });
-  };
 
   useEffect(() => {
     if (todo) {
@@ -102,7 +72,34 @@ const AddTodoModal = ({ openOrCloseAddPopupModal, todo, setShowOrHideUpdateModal
         dateError: false,
       });
     }
-    addOrUpdateTodo();
+
+    if (todo) {
+      dispatch(
+        editTodo({
+          id: todo.id,
+          task: todoInputData.todoInputText,
+          color: todo.color,
+          completed: todo.completed,
+          time: todoInputData.time,
+        })
+      );
+    } else {
+      dispatch(
+        addTodo({
+          id: Date.now(),
+          task: todoInputData.todoInputText.trim(),
+          color: "green",
+          completed: false,
+          time: todoInputData.time,
+        })
+      );
+    }
+    setEditTodoData(null)
+    openOrCloseTodoModal();
+    setTodoInputData({
+      todoInputText: "",
+      time: moment().format("YYYY-MM-DDTHH:mm")
+    });
   };
 
   return (
@@ -127,13 +124,7 @@ const AddTodoModal = ({ openOrCloseAddPopupModal, todo, setShowOrHideUpdateModal
             } 2xl:mt-2 focus:outline-none`}
         />
         <div className="w-full flex justify-between text-lg font-semibold text-blue-500 mt-3 px-4">
-          <button onClick={() => {
-            if (todo) {
-              setShowOrHideUpdateModal(false);
-            } else {
-              openOrCloseAddPopupModal();
-            }
-          }}>
+          <button onClick={openOrCloseTodoModal}>
             Cancel
           </button>
           <button onClick={handleAddOrUpdateTodo}>
